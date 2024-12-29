@@ -1,5 +1,6 @@
+#import <Foundation/Foundation.h>
+
 #import "AppDelegate.h"
-#include <Foundation/Foundation.h>
 
 @interface AppDelegate ()
 
@@ -9,7 +10,6 @@
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
-	NSLog(@"Finished launching");
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {

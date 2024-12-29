@@ -1,6 +1,7 @@
 TARG=Graphics
 OFILES=main.o\
-	AppDelegate.o
+	AppDelegate.o\
+	RenderView.o
 
 BIN=Graphics.app/Contents/MacOS
 

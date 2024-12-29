@@ -5,7 +5,7 @@
             "type": "lldb-dap",
             "request": "launch",
             "name": "Launch",
-            "program": "${workspaceRoot}/Rays.app/Contents/MacOS/Rays",
+            "program": "${workspaceRoot}/Graphics.app/Contents/MacOS/Graphics",
             "args": [],
             "env": [],
             "cwd": "${workspaceRoot}"
@@ -14,7 +14,7 @@
             "type": "lldb-dap",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceRoot}/Rays.app/Contents/MacOS/Rays",
+            "program": "${workspaceRoot}/Graphics.app/Contents/MacOS/Graphics",
             "args": [],
             "env": [],
             "cwd": "${workspaceRoot}"
