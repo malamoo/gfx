@@ -1,0 +1,8 @@
+AllowShortFunctionsOnASingleLine: None
+ColumnLimit: 0
+MaxEmptyLinesToKeep: 1
+SortIncludes: false
+IndentWidth: 4
+UseTab: ForIndentation
+TabWidth: 4
+IndentCaseLabels: false

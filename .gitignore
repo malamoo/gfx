@@ -1,0 +1,7 @@
+*.app
+compile_commands.json
+*.o.json
+*.o
+*.out
+.cache
+.DS_Store
