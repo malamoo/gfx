@@ -1,5 +1,4 @@
-#import <AppKit/AppKit.h>
-#include <CoreGraphics/CoreGraphics.h>
+#import <Cocoa/Cocoa.h>
 
 #import "RenderView.h"
 
@@ -11,7 +10,7 @@
 	NSGraphicsContext *context = [NSGraphicsContext currentContext];
 	CGContextRef cgContext = [context CGContext];
 
-	CGContextSetRGBFillColor(cgContext, 0.25, 0.5, 1, 1);
+	CGContextSetRGBFillColor(cgContext, 0.1608, 0.1686, 0.2000, 1);
 	CGContextFillRect(cgContext, self.bounds);
 
 	static float angle = 0;

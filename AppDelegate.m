@@ -1,11 +1,11 @@
-#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 
 #import "AppDelegate.h"
 #import "RenderView.h"
 
 @interface AppDelegate ()
-@property(strong) IBOutlet NSWindow *window;
-@property(strong) NSTimer *timer;
+@property(weak) IBOutlet NSWindow *window;
+@property(weak) NSTimer *timer;
 @end
 
 @implementation AppDelegate
@@ -24,11 +24,6 @@
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
 	[self.timer invalidate];
-	self.timer = nil;
-}
-
-- (BOOL)applicationSupportsSecureRestorableState:(NSApplication *)app {
-	return YES;
 }
 
 @end
