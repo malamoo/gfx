@@ -24,8 +24,8 @@ $(CONT)/MacOS/$(TARG): $(OFILES)
 %.o: %.m
 	$(CC) $(MFLAGS) -c $*.m
 
-$(CONT)/Resources/%.nib: %.xib
-	ibtool --compile $(CONT)/Resources/$*.nib $*.xib
+$(CONT)/Resources/$(NIB): $(NIB)
+	cp $(NIB) $(CONT)/Resources
 
 .PHONY: clean
 clean:
