@@ -1,16 +1,19 @@
 #import <Cocoa/Cocoa.h>
 
 #import "AppDelegate.h"
-#import "RenderView.h"
+#import "RayView.h"
 
 @interface AppDelegate ()
-@property(weak) IBOutlet NSWindow *window;
-@property(weak) NSTimer *timer;
+@property(strong) IBOutlet NSWindow *window;
+@property(strong) NSTimer *timer;
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification {
+	RayView *rayView = [[RayView alloc] initWithFrame:self.window.contentView.frame];
+	[self.window setContentView:rayView];
+
 	self.timer = [NSTimer scheduledTimerWithTimeInterval:1.0 / 60.0
 	                                              target:self
 	                                            selector:@selector(updateGraphics)
@@ -19,11 +22,13 @@
 }
 
 - (void)updateGraphics {
-	[self.window.contentView setNeedsDisplay:YES];
+	RayView *rayView = (RayView *)self.window.contentView;
+	[rayView setNeedsDisplay:YES];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
 	[self.timer invalidate];
+	self.timer = nil;
 }
 
 @end

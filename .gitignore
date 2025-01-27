@@ -2,6 +2,7 @@
 compile_commands.json
 *.o.json
 *.o
+*.d
 *.out
 .cache
 .DS_Store

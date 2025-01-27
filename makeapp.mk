@@ -1,22 +1,8 @@
-CONT=$(TARG).app/Contents
-
 .PHONY: all
-all: $(CONT)/MacOS\
-	 $(CONT)/Resources\
-	 $(CONT)/Info.plist\
-	 $(CONT)/MacOS/$(TARG)\
-	 $(CONT)/Resources/$(NIB)
+all: a.out
 
-$(CONT)/MacOS $(CONT)/Resources:
-	mkdir -p $(CONT)/MacOS $(CONT)/Resources
-
-$(CONT)/Info.plist: Info.plist
-	cp Info.plist $(CONT)
-
-$(CONT)/MacOS/$(TARG): $(OFILES)
-	$(CC) $(LDFLAGS) -o $(CONT)/MacOS/$(TARG) $(OFILES) $(LDADD)
-
-%.o: $(HFILES)
+a.out: $(OFILES)
+	$(CC) $(LDFLAGS) -o a.out $(OFILES) $(LDADD)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $*.c
@@ -24,10 +10,26 @@ $(CONT)/MacOS/$(TARG): $(OFILES)
 %.o: %.m
 	$(CC) $(MFLAGS) -c $*.m
 
-$(CONT)/Resources/$(NIB): $(NIB)
-	cp $(NIB) $(CONT)/Resources
+.PHONY: install
+install: $(BIN)/$(TARGET).app/Contents/MacOS\
+		 $(BIN)/$(TARGET).app/Contents/Resources\
+		 $(BIN)/$(TARGET).app/Contents/Info.plist\
+		 $(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET)\
+		 $(BIN)/$(TARGET).app/Contents/Resources/$(NIB)
+
+$(BIN)/$(TARGET).app/Contents/MacOS $(BIN)/$(TARGET).app/Contents/Resources:
+	mkdir -p $(BIN)/$(TARGET).app/Contents/MacOS $(BIN)/$(TARGET).app/Contents/Resources
+
+$(BIN)/$(TARGET).app/Contents/Info.plist: Info.plist
+	cp Info.plist $(BIN)/$(TARGET).app/Contents
+
+$(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET): a.out
+	cp a.out $(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET)
+
+$(BIN)/$(TARGET).app/Contents/Resources/$(NIB): $(NIB)
+	cp $(NIB) $(BIN)/$(TARGET).app/Contents/Resources
 
 .PHONY: clean
 clean:
-	rm -f *.o $(CLEANFILES)
-	rm -rf ./$(TARG).app
+	rm -f *.o a.out $(CLEANFILES)
+	rm -rf ./$(TARGET).app
