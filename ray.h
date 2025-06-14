@@ -1,1 +1,11 @@
-int renderimage(uint8_t *image, int nx, int ny);
+enum {
+	WIDTH = 1440,
+	HEIGHT = 1080,
+	DEPTH = 1080
+};
+
+typedef struct RGB {
+    uint8_t r, g, b;
+} RGB;
+
+RGB *raytraceimage(void);

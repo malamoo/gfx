@@ -14,7 +14,7 @@
             "type": "lldb-dap",
             "request": "launch",
             "name": "Debug",
-            "program": "${workspaceRoot}/Graphics.app/Contents/MacOS/Graphics",
+            "program": "${workspaceRoot}/Graphics.app",
             "args": [],
             "env": [],
             "cwd": "${workspaceRoot}"
