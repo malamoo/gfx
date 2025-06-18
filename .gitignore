@@ -4,5 +4,7 @@ compile_commands.json
 *.o
 *.d
 *.out
+*.nib
+debug.entitlements
 .cache
 .DS_Store

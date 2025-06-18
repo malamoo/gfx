@@ -1,6 +1,7 @@
 TARGET=Graphics
 OFILES=main.o cocoa.o ray.o vec.o
-NIB=MainMenu.nib
+NIB=MainMenu
+SIGNID="Development"
 
 BIN=.
 
@@ -14,9 +15,9 @@ CFLAGS=-Wall\
 	-Wno-unused-parameter\
 	-Wno-sign-compare\
 	-Wno-unused-function\
-	-g\
 	-MJ $*.o.json\
-	-MMD
+	-MMD\
+	-g
 MFLAGS=-Wall\
 	-Werror\
 	-Wextra\
@@ -25,11 +26,11 @@ MFLAGS=-Wall\
 	-fobjc-arc\
 	-fmodules\
 	-Wno-unused-parameter\
-	-g\
 	-MJ $*.o.json\
-	-MMD
+	-MMD\
+	-g
 LDADD=-framework Cocoa
-CLEANFILES=*.o.json compile_commands.json *.d
+CLEANFILES=*.d *.o.json compile_commands.json
 
 .PHONY: all
 all: install

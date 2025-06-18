@@ -2,9 +2,9 @@
 
 #include "vec.h"
 
-vector vmake(double x, double y, double z)
+Vec3 vmake3(double x, double y, double z)
 {
-	vector a;
+	Vec3 a;
 
 	a.x = x;
 	a.y = y;
@@ -12,7 +12,7 @@ vector vmake(double x, double y, double z)
 	return a;
 }
 
-vector vmul(double k, vector a)
+Vec3 vmul3(double k, Vec3 a)
 {
 	a.x *= k;
 	a.y *= k;
@@ -20,7 +20,7 @@ vector vmul(double k, vector a)
 	return a;
 }
 
-vector vdiv(double k, vector a)
+Vec3 vdiv3(double k, Vec3 a)
 {
 	a.x /= k;
 	a.y /= k;
@@ -28,7 +28,7 @@ vector vdiv(double k, vector a)
 	return a;
 }
 
-vector vadd(vector a, vector b)
+Vec3 vadd3(Vec3 a, Vec3 b)
 {
 	a.x += b.x;
 	a.y += b.y;
@@ -36,7 +36,7 @@ vector vadd(vector a, vector b)
 	return a;
 }
 
-vector vsub(vector a, vector b)
+Vec3 vsub3(Vec3 a, Vec3 b)
 {
 	a.x -= b.x;
 	a.y -= b.y;
@@ -44,14 +44,14 @@ vector vsub(vector a, vector b)
 	return a;
 }
 
-double vdot(vector a, vector b)
+double vdot3(Vec3 a, Vec3 b)
 {
 	return a.x*b.x + a.y*b.y + a.z*b.z;
 }
 
-vector vcross(vector a, vector b)
+Vec3 vcross3(Vec3 a, Vec3 b)
 {
-	vector c;
+	Vec3 c;
 
 	c.x = a.y*b.z - a.z*b.y;
 	c.y = a.z*b.x - a.x*b.z;
@@ -59,17 +59,17 @@ vector vcross(vector a, vector b)
 	return c;
 }
 
-double vlen(vector a)
+double vlen3(Vec3 a)
 {
 	return sqrt(a.x*a.x + a.y*a.y + a.z*a.z);
 }
 
-vector vunit(vector a)
+Vec3 vunit3(Vec3 a)
 {
-	return vdiv(vlen(a), a);
+	return vdiv3(vlen3(a), a);
 }
 
-vector vflip(vector a)
+Vec3 vflip3(Vec3 a)
 {
-	return vmul(-1, a);
+	return vmul3(-1, a);
 }

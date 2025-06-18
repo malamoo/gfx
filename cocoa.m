@@ -18,7 +18,7 @@ enum {
 
 @implementation AppDelegate
 
-- (void)run {
+- (void)runNonBlocking {
   @autoreleasepool {
     NSEvent *event;
     while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES])) {
@@ -31,7 +31,9 @@ enum {
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
   NSRect frame = [[self.window contentView] frame];
   self.view = [[View alloc] initWithFrame:frame];
-  [self.window setContentView:self.view];
+  self.window.contentView = self.view;
+
+  [NSApp stop:nil];
 }
 
 - (BOOL)windowShouldClose:(NSWindow *)sender {
@@ -54,21 +56,19 @@ enum {
   if (self) {
     lastTime = CACurrentMediaTime();
     fps = 0.0;
+    colorSpace = CGColorSpaceCreateDeviceRGB();
+    provider = nil;
+    image = nil;
   }
   return self;
 }
 
-- (void)setImage:(void *)data width:(int)width height:(int)height {
-  if (image) {
+- (void)updateImage:(void *)data width:(int)width height:(int)height {
+  if (image)
     CGImageRelease(image);
+  if (provider)
     CGDataProviderRelease(provider);
-    CGColorSpaceRelease(colorSpace);
-    image = nil;
-    provider = nil;
-    colorSpace = nil;
-  }
 
-  colorSpace = CGColorSpaceCreateDeviceRGB();
   provider = CGDataProviderCreateWithData(NULL, data, width * height * PIXSIZE, NULL);
   image = CGImageCreate(width, height, COMBITS, PIXBITS, width * PIXSIZE, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaNone, provider, NULL, true, kCGRenderingIntentDefault);
 }
@@ -76,38 +76,40 @@ enum {
 - (void)drawRect:(NSRect)dirtyRect {
   [super drawRect:dirtyRect];
 
-  if (image) {
-    CGContextRef ctx = [[NSGraphicsContext currentContext] CGContext];
-    CGContextSaveGState(ctx);
-    CGContextTranslateCTM(ctx, 0, self.bounds.size.height);
-    CGContextScaleCTM(ctx, 1.0, -1.0);
-    CGContextDrawImage(ctx, self.bounds, image);
-    CGContextRestoreGState(ctx);
+  if (!image)
+    return;
 
-    double now = CACurrentMediaTime();
-    double delta = now - lastTime;
-    if (delta > 0)
-      fps = 1.0 / delta;
-    lastTime = now;
+  CGContextRef ctx = [[NSGraphicsContext currentContext] CGContext];
+  CGContextSaveGState(ctx);
+  CGContextTranslateCTM(ctx, 0.0, self.bounds.size.height);
+  CGContextScaleCTM(ctx, 1.0, -1.0);
+  CGContextDrawImage(ctx, self.bounds, image);
+  CGContextRestoreGState(ctx);
 
-    NSString *text = [NSString stringWithFormat:@"%.1f FPS", fps];
-    NSDictionary *attrs = @{
-      NSFontAttributeName : [NSFont systemFontOfSize:24],
-      NSForegroundColorAttributeName : [NSColor orangeColor]
-    };
-    NSSize textSize = [text sizeWithAttributes:attrs];
-    NSRect bounds = self.bounds;
-    NSPoint point = NSMakePoint(10, NSMaxY(bounds) - textSize.height - 10);
-    [text drawAtPoint:point withAttributes:attrs];
-  }
+  double now = CACurrentMediaTime();
+  double delta = now - lastTime;
+  if (delta > 0.0)
+    fps = 1.0 / delta;
+  lastTime = now;
+
+  NSString *text = [NSString stringWithFormat:@"%.1f FPS", fps];
+  NSDictionary *attrs = @{
+    NSFontAttributeName : [NSFont systemFontOfSize:24.0],
+    NSForegroundColorAttributeName : [NSColor orangeColor]
+  };
+  NSSize textSize = [text sizeWithAttributes:attrs];
+  NSRect bounds = self.bounds;
+  NSPoint point = NSMakePoint(10.0, NSMaxY(bounds) - textSize.height - 10.0);
+  [text drawAtPoint:point withAttributes:attrs];
 }
 
 - (void)dealloc {
-  if (image) {
+  if (image)
     CGImageRelease(image);
+  if (provider)
     CGDataProviderRelease(provider);
+  if (colorSpace)
     CGColorSpaceRelease(colorSpace);
-  }
 }
 
 @end
@@ -116,16 +118,16 @@ void processinput(void) {
   if (!NSApp) {
     [NSApplication sharedApplication];
     [[NSBundle mainBundle] loadNibNamed:@"MainMenu" owner:NSApp topLevelObjects:nil];
-    [NSApp finishLaunching];
+    [NSApp run];
   }
   AppDelegate *delegate = [NSApp delegate];
-  [delegate run];
+  [delegate runNonBlocking];
 }
 
 void displayimage(void *img, int width, int height) {
   AppDelegate *delegate = [NSApp delegate];
   View *view = [delegate view];
-  [view setImage:img width:width height:height];
+  [view updateImage:img width:width height:height];
   [view display];
 }
 
