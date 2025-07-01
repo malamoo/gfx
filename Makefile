@@ -1,4 +1,4 @@
-TARGET=Graphics
+TARGET=App
 OFILES=main.o cocoa.o ray.o vec.o
 NIB=MainMenu
 SIGNID="Development"
@@ -15,6 +15,8 @@ CFLAGS=-Wall\
 	-Wno-unused-parameter\
 	-Wno-sign-compare\
 	-Wno-unused-function\
+	-Wno-missing-field-initializers\
+	-Wno-incompatible-pointer-types-discards-qualifiers\
 	-MJ $*.o.json\
 	-MMD\
 	-g

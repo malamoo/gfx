@@ -1,11 +1,11 @@
-enum {
-	WIDTH = 1440,
-	HEIGHT = 1080,
-	DEPTH = 1080
+typedef uint8_t RGB[3];
+
+struct Image {
+	int nx;
+	int ny;
+	RGB *pix;
 };
 
-typedef struct RGB {
-    uint8_t r, g, b;
-} RGB;
+extern struct Image image;
 
-RGB *raytraceimage(void);
+RGB *raytrace(void);

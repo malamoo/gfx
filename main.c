@@ -3,7 +3,11 @@
 #include "cocoa.h"
 #include "ray.h"
 
-static void render(void);
+static void render(void)
+{
+    RGB *img = raytrace();
+    displayimage(img, image.nx, image.ny);
+}
 
 int main(void)
 {
@@ -13,10 +17,4 @@ int main(void)
     }
 
     return 0;
-}
-
-static void render(void)
-{
-    RGB *img = raytraceimage();
-    displayimage(img, WIDTH, HEIGHT);
 }

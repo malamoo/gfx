@@ -11,12 +11,9 @@ a.out: $(OFILES)
 	$(CC) $(MFLAGS) -c $*.m
 
 .PHONY: install
-install: $(BIN)/$(TARGET).app
+install: $(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET)
 
-$(BIN)/$(TARGET).app: Info.plist\
-					  $(NIB).nib\
-					  a.out\
-					  debug.entitlements
+$(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET): Info.plist $(NIB).nib a.out debug.entitlements
 	mkdir -p $(BIN)/$(TARGET).app/Contents/MacOS $(BIN)/$(TARGET).app/Contents/Resources
 	cp Info.plist $(BIN)/$(TARGET).app/Contents
 	cp $(NIB).nib $(BIN)/$(TARGET).app/Contents/Resources

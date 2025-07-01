@@ -1,14 +1,16 @@
-typedef struct Vec3 {
-	double x, y, z;
-} Vec3;
+typedef struct Vector3 {
+	double x;
+	double y;
+	double z;
+} Vector3;
 
-Vec3 vmake3(double x, double y, double z);
-Vec3 vmul3(double k, Vec3 a);
-Vec3 vdiv3(double k, Vec3 a);
-Vec3 vadd3(Vec3 a, Vec3 b);
-Vec3 vsub3(Vec3 a, Vec3 b);
-double vdot3(Vec3 a, Vec3 b);
-Vec3 vcross3(Vec3 a, Vec3 b);
-double vlen3(Vec3 a);
-Vec3 vunit3(Vec3 a);
-Vec3 vflip3(Vec3 a);
+Vector3 makev3(double, double, double);
+Vector3 addv3(Vector3, Vector3);
+Vector3 subv3(Vector3, Vector3);
+Vector3 mulv3(Vector3, double);
+Vector3 divv3(Vector3, double);
+double dotv3(Vector3, Vector3);
+Vector3 crossv3(Vector3, Vector3);
+Vector3 flipv3(Vector3);
+double lenv3(Vector3);
+Vector3 unitv3(Vector3);

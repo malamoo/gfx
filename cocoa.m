@@ -1,12 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-enum {
-  NCOM = 3,                         // components per pixel
-  COMBITS = 8,                      // bits per component
-  PIXBITS = NCOM * COMBITS,         // bits per pixel
-  PIXSIZE = NCOM * sizeof(uint8_t), // bytes per pixel
-};
-
 @interface View : NSView
 @end
 
@@ -43,12 +36,15 @@ enum {
 
 @end
 
+static const NSUInteger SamplesPerPixel = 3;
+static const NSUInteger BitsPerSample = 8;
+static const NSUInteger BitsPerPixel = SamplesPerPixel * BitsPerSample;
+static const NSUInteger BytesPerPixel = SamplesPerPixel * sizeof(uint8_t);
+
 @implementation View {
   double lastTime;
   double fps;
-  CGColorSpaceRef colorSpace;
-  CGDataProviderRef provider;
-  CGImageRef image;
+  NSBitmapImageRep *bitmapRep;
 }
 
 - (instancetype)initWithFrame:(NSRect)frame {
@@ -56,60 +52,48 @@ enum {
   if (self) {
     lastTime = CACurrentMediaTime();
     fps = 0.0;
-    colorSpace = CGColorSpaceCreateDeviceRGB();
-    provider = nil;
-    image = nil;
+    bitmapRep = nil;
   }
   return self;
 }
 
-- (void)updateImage:(void *)data width:(int)width height:(int)height {
-  if (image)
-    CGImageRelease(image);
-  if (provider)
-    CGDataProviderRelease(provider);
-
-  provider = CGDataProviderCreateWithData(NULL, data, width * height * PIXSIZE, NULL);
-  image = CGImageCreate(width, height, COMBITS, PIXBITS, width * PIXSIZE, colorSpace, kCGBitmapByteOrderDefault | kCGImageAlphaNone, provider, NULL, true, kCGRenderingIntentDefault);
+- (BOOL)isFlipped {
+  return YES;
 }
+
+- (void)updateImage:(unsigned char *)data width:(int)width height:(int)height {
+  bitmapRep = nil;
+  bitmapRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:&data
+                                                      pixelsWide:width
+                                                      pixelsHigh:height
+                                                   bitsPerSample:BitsPerSample
+                                                 samplesPerPixel:SamplesPerPixel
+                                                        hasAlpha:NO
+                                                        isPlanar:NO
+                                                  colorSpaceName:NSCalibratedRGBColorSpace
+                                                     bytesPerRow:width * BytesPerPixel
+                                                    bitsPerPixel:BitsPerPixel];
+  }
 
 - (void)drawRect:(NSRect)dirtyRect {
   [super drawRect:dirtyRect];
 
-  if (!image)
+  if (!bitmapRep)
     return;
 
-  CGContextRef ctx = [[NSGraphicsContext currentContext] CGContext];
-  CGContextSaveGState(ctx);
-  CGContextTranslateCTM(ctx, 0.0, self.bounds.size.height);
-  CGContextScaleCTM(ctx, 1.0, -1.0);
-  CGContextDrawImage(ctx, self.bounds, image);
-  CGContextRestoreGState(ctx);
+  [bitmapRep drawInRect:self.bounds];
 
   double now = CACurrentMediaTime();
   double delta = now - lastTime;
   if (delta > 0.0)
     fps = 1.0 / delta;
   lastTime = now;
-
   NSString *text = [NSString stringWithFormat:@"%.1f FPS", fps];
   NSDictionary *attrs = @{
     NSFontAttributeName : [NSFont systemFontOfSize:24.0],
     NSForegroundColorAttributeName : [NSColor orangeColor]
   };
-  NSSize textSize = [text sizeWithAttributes:attrs];
-  NSRect bounds = self.bounds;
-  NSPoint point = NSMakePoint(10.0, NSMaxY(bounds) - textSize.height - 10.0);
-  [text drawAtPoint:point withAttributes:attrs];
-}
-
-- (void)dealloc {
-  if (image)
-    CGImageRelease(image);
-  if (provider)
-    CGDataProviderRelease(provider);
-  if (colorSpace)
-    CGColorSpaceRelease(colorSpace);
+  [text drawAtPoint:NSMakePoint(10, 10) withAttributes:attrs];
 }
 
 @end
