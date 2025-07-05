@@ -1,11 +1,10 @@
 typedef uint8_t RGB[3];
 
+typedef struct Image Image;
 struct Image {
 	int nx;
 	int ny;
 	RGB *pix;
 };
 
-extern struct Image image;
-
-RGB *raytrace(void);
+Image *raytrace(void);

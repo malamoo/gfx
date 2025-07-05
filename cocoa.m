@@ -11,7 +11,7 @@
 
 @implementation AppDelegate
 
-- (void)runNonBlocking {
+- (void)run {
   @autoreleasepool {
     NSEvent *event;
     while ((event = [NSApp nextEventMatchingMask:NSEventMaskAny untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES])) {
@@ -105,7 +105,7 @@ void processinput(void) {
     [NSApp run];
   }
   AppDelegate *delegate = [NSApp delegate];
-  [delegate runNonBlocking];
+  [delegate run];
 }
 
 void displayimage(void *img, int width, int height) {

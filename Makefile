@@ -1,13 +1,18 @@
-TARGET=App
-OFILES=main.o cocoa.o ray.o vec.o
+TARG=App
+OFILES=\
+	main.o\
+	cocoa.o\
+	ray.o\
+	vec.o\
+	eprintf.o
 NIB=MainMenu
-SIGNID="Development"
 
 BIN=.
 
 include makeapp.mk
 CC=clang
-CFLAGS=-Wall\
+CFLAGS=\
+	-Wall\
 	-Werror\
 	-Wextra\
 	-pedantic\
@@ -20,7 +25,8 @@ CFLAGS=-Wall\
 	-MJ $*.o.json\
 	-MMD\
 	-g
-MFLAGS=-Wall\
+MFLAGS=\
+	-Wall\
 	-Werror\
 	-Wextra\
 	-pedantic\
@@ -32,10 +38,8 @@ MFLAGS=-Wall\
 	-MMD\
 	-g
 LDADD=-framework Cocoa
+SIGNID=Development
 CLEANFILES=*.d *.o.json compile_commands.json
-
-.PHONY: all
-all: install
 
 compile_commands.json: $(OFILES:%.o=%.o.json)
 	sed -e '1s/^/[\n/' -e '$$s/,$$/\n]/' *.o.json >compile_commands.json

@@ -5,8 +5,8 @@
 
 static void render(void)
 {
-    RGB *img = raytrace();
-    displayimage(img, image.nx, image.ny);
+    Image *img = raytrace();
+    displayimage(img->pix, img->nx, img->ny);
 }
 
 int main(void)

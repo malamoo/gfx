@@ -1,8 +1,10 @@
+APP=$(TARG).app
+
 .PHONY: all
 all: a.out
 
 a.out: $(OFILES)
-	$(CC) $(LDFLAGS) -o a.out $(OFILES) $(LDADD)
+	$(CC) $(LDFLAGS) -o $@ $^ $(LDADD)
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $*.c
@@ -11,22 +13,37 @@ a.out: $(OFILES)
 	$(CC) $(MFLAGS) -c $*.m
 
 .PHONY: install
-install: $(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET)
+install: $(BIN)/$(TARG)
 
-$(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET): Info.plist $(NIB).nib a.out debug.entitlements
-	mkdir -p $(BIN)/$(TARGET).app/Contents/MacOS $(BIN)/$(TARGET).app/Contents/Resources
-	cp Info.plist $(BIN)/$(TARGET).app/Contents
-	cp $(NIB).nib $(BIN)/$(TARGET).app/Contents/Resources
-	cp a.out $(BIN)/$(TARGET).app/Contents/MacOS/$(TARGET)
-	codesign -f -s $(SIGNID) --entitlements debug.entitlements $(BIN)/$(TARGET).app
+$(BIN)/$(TARG): a.out
+	cp $< $@
 
-$(NIB).nib: $(NIB).xib
-	ibtool --compile $(NIB).nib $(NIB).xib
+.PHONY: install_app
+install_app: $(BIN)/$(APP)/Contents/MacOS/$(TARG) \
+			 $(BIN)/$(APP)/Contents/Resources/$(NIB).nib\
+	 		 $(BIN)/$(APP)/Contents/Info.plist
 
-debug.entitlements: $(TARGET).entitlements
-	plutil -insert 'com\.apple\.security\.get-task-allow' -bool true $(TARGET).entitlements -o debug.entitlements
+$(BIN)/$(APP)/Contents/MacOS/$(TARG): a.out
+	mkdir -p $(@D)
+	cp $< $@
+
+$(BIN)/$(APP)/Contents/Resources/$(NIB).nib: $(NIB).xib
+	mkdir -p $(@D)
+	ibtool --compile $@ $<
+
+$(BIN)/$(APP)/Contents/Info.plist: Info.plist
+	mkdir -p $(@D)
+	cp $< $@
+
+.PHONY: sign
+sign: debug.entitlements
+	codesign --remove-signature $(BIN)/$(APP)
+	codesign --sign "$(SIGNID)" --entitlements debug.entitlements $(BIN)/$(APP)
+
+debug.entitlements: $(TARG).entitlements
+	plutil -insert 'com\.apple\.security\.get-task-allow' -bool true $< -o $@
 
 .PHONY: clean
 clean:
-	rm -f *.o $(NIB).nib a.out debug.entitlements $(CLEANFILES)
-	rm -rf ./$(TARGET).app
+	rm -f *.o a.out debug.entitlements $(CLEANFILES)
+	rm -rf ./$(TARG) ./$(APP)
